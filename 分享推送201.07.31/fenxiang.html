@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>分享</title>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js" ></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js" ></script>
+	<style>
+	*{
+		padding:0px;
+		margin:0px;
+		vertical-align: baseline;
+		font-family: "微软雅黑";
+	}
+	body{
+		background-color: #333;
+  		color: #333;
+		font-weight:400;
+	}
+	.main{
+		padding:35px 35px;
+		margin: 8% auto auto auto;
+		display:table;
+		width:410px;
+		height:auto;
+		border-radius: 3px;
+		background:#fff;
+		position:relative;
+	}
+	.text{
+		width:100%;
+		height:auto;
+	    text-align:center;
+	    clear:both;
+	    font-weight:500;
+	    font-size:1.75em;
+	}
+	.text >i{
+      font-size:1.0em;
+      margin-right: 0.4em;
+    }
+	.author{
+		padding: 15px 10px;
+		width:100%;
+		height:auto;
+		text-align: right;
+	}
+	.buttons{
+		margin: auto;
+		width: 100%;
+	}
+	.button {
+		display: block;
+		height:38px;
+		border:none;
+		border-radius:3px;
+		color:#fff;
+		background-color:#333;
+		outline:none;
+		font-size:0.85em;
+		padding: 8px 18px 6px 18px;
+		margin-top:30px;
+		opacity:1;
+		cursor:pointer;
+  	}
+    .button:hover {
+        opacity:0.9;
+     }
+    #tweet, #tumblr {
+        float:left;
+        padding:0px;
+        padding-top:8px;
+        text-align:center;
+        font-size:1.2em;
+        margin-right:5px;
+        height:30px;
+        width:40px;
+      }
+    #newquote {
+        float:right;
+    }
+	</style>
+
+<script>
+//判断当前页面是否是顶窗口
+//本地：
+function isInframe(){
+	try{
+		return (window.self == window.top);//本地测试
+		/*return (window.self !== window.top);//codePen测试*/
+	}
+	catch(e){
+		return true;
+	}
+}
+//设置文本及背景颜色
+var colors = ['#16a085', '#27ae60', '#2c3e50', '#f39c12', '#e74c3c', '#9b59b6', '#FB6964', '#342224', "#472E32", "#BDBB99", "#77B1A9", "#73A857"];
+//设置文本内容和作者变量
+var currentQuote = '', currentAuthor = '';
+//设置跳转链接功能
+function openURL(url){
+	window.open("url","share",'width=550, height=400, toolbar=0, scrollbars=1 ,location=0 ,statusbar=0,menubar=0, resizable=0');
+}
+
+function getQuote() {
+	$.ajax({
+	    headers: {
+	      "X-Mashape-Key": "OivH71yd3tmshl9YKzFH7BTzBVRQp1RaKLajsnafgL2aPsfP9V",
+	      Accept: "application/json",
+	      "Content-Type": "application/x-www-form-urlencoded"
+	    },
+	    url: 'https://andruxnet-random-famous-quotes.p.mashape.com/cat=',
+	    success: function(r) {
+	      if (typeof r === 'string') {
+	       r = JSON.parse(r); 
+	      }
+	      currentQuote = r.quote;
+	      currentAuthor = r.author;
+	      if(isInframe())
+	      {
+	        $('#tweet').attr('href', 'https://twitter.com/intent/tweet?hashtags=quotes&related=freecodecamp&text=' + encodeURIComponent('"' + currentQuote + '" ' + currentAuthor));
+	        $('#tumblr').attr('href', 'https://www.tumblr.com/widgets/share/tool?posttype=quote&tags=quotes,freecodecamp&caption='+encodeURIComponent(currentAuthor)+'&content=' + encodeURIComponent(currentQuote)+'&canonicalUrl=https%3A%2F%2Fwww.tumblr.com%2Fbuttons&shareSource=tumblr_share_button');
+	      }
+	      $(".text").animate({
+	          opacity: 0
+	        }, 500,
+	        function() {
+	          $(this).animate({
+	            opacity: 1
+	          }, 500);
+	          $('#text').text(r.quote);
+	        });
+
+	      $(".author").animate({
+	          opacity: 0
+	        }, 500,
+	        function() {
+	          $(this).animate({
+	            opacity: 1
+	          }, 500);
+	          $('#author').html(r.author);
+	        });
+
+	      var color = Math.floor(Math.random() * colors.length);
+	      $("html body").animate({
+	        backgroundColor: colors[color],
+	        color: colors[color]
+	      }, 1000);
+	      $(".button").animate({
+	        backgroundColor: colors[color]
+	      }, 1000);
+	    }
+	});
+}
+$(document).ready(function() {
+  getQuote();
+  $('#newquote').on('click', getQuote);
+  $('#tweet').on('click', function() {
+    if(!isInframe()) {
+      openURL('https://twitter.com/intent/tweet?hashtags=quotes&related=freecodecamp&text=' + encodeURIComponent('"' + currentQuote + '" ' + currentAuthor));
+    }
+  });
+  $('#tumblr').on('click', function() {
+    if(!isInframe()) {
+      openURL('https://www.tumblr.com/widgets/share/tool?posttype=quote&tags=quotes,freecodecamp&caption='+encodeURIComponent(currentAuthor)+'&content=' + encodeURIComponent(currentQuote)+'&canonicalUrl=https%3A%2F%2Fwww.tumblr.com%2Fbuttons&shareSource=tumblr_share_button');
+    }
+  });
+});
+</script>
+
+</head>
+<body>
+<div class="main">
+	<div class="value">
+		<div class="text">
+			<i class="fa fa-quote-left"></i>
+			<span id="text"></span>
+		</div>
+		<div class="author">
+			-<span id="author"></span>
+		</div>
+	</div>
+	<div class="buttons">
+		<a class="button" id="tweet" target="_blank">
+      		<i class="fa fa-twitter"></i>
+    	</a>
+    	<a class="button" id="tumblr" target="_blank">
+	     	<i class="fa fa-tumblr"></i>
+	    </a>
+	    <button class="button" id="newquote">唯美语句</button>
+	</div>
+</div>
+</body>
+
+</html>

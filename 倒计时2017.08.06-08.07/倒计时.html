@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>js计时器</title>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+<style>
+body{
+  background:#936;
+  color:#FFF;
+}
+.main{
+  margin: 3% auto auto auto;
+  width:800px;
+  display: none;
+}
+.col-md-6{
+  font-size:25px;
+  text-align: center;
+  vertical-align: center;
+}
+.glyphicon{
+  margin:auto 15px;
+  font-size:25px;
+  padding-bottom: 10px;
+  cursor: pointer;
+}
+h5{
+  font-size:20px;
+}
+.time-B,.time-L{
+  display:inline-block;
+  width:85px;
+  font-size: 50px;
+  border: none;
+  outline:none;
+  background:#936;
+  text-align: center;
+}
+.showtime{
+  margin: 20px auto auto auto;
+  width: 350px;
+  height:350px;
+  text-align:center;
+  border:2px #9C0 solid;
+  border-radius:350px;
+}
+
+.value{
+  position: relative;
+  margin: 2px;
+  width: 342px;
+  height:342px;
+  text-align:center;
+  border-radius:342px;
+  overflow: hidden;
+  color:#FFF;
+  cursor: pointer;
+}
+.head{
+  margin: 80px auto 70px auto;
+}
+.timebody{
+  font-size: 4em;
+}
+.bg{
+  position: absolute;
+  height:0.1%;
+  bottom:0px;
+  left: 0px;
+  right:0px;
+  background:#9C0;
+  z-index:-1;
+}
+</style>
+<script>
+$(document).ready(function(){
+	$(".main").slideDown(1000);
+	var tb;
+    var tl;
+    var N=0;
+    var ctb=0,ctl=0,ctimel=0,ctimeb=0;
+    var time,timeL,timeB;
+    var timearr=[];
+    var timestr="";
+    var timeobj_1,timeobj_2;
+    var totalb,totall;
+    var total1,total2;
+    tb=$(".time-B").val();
+    tl=$(".time-L").val();
+    totalb=tb*60;
+    totall=tl*60;
+    total1=totalb;
+    total2=totall;
+    timeB=getTime(totalb);
+    timeL=getTime(totall);
+    if($(".value").hasClass("TimeL")){
+      $(".timebody").html(timeL);
+    }else{
+      $(".timebody").html(timeB);
+    }
+    timeChange();
+    $(".value").click(function(){
+    	if(ctimeb!=ctb){
+	        tb=$(".time-B").val();
+			totalb=tb*60;
+			total1=totalb;
+			timeB=getTime(totalb);
+	        ctimeb=ctb;
+	    }
+	    if(ctimel!=ctl){
+	        tl=$(".time-L").val();
+			totall=tl*60;
+			total2=totall;
+			timeL=getTime(totall);
+	        ctimel=ctl;
+	        $(".value").removeClass("TimeB");
+    		$(".value").addClass("TimeL")
+	    } 
+		if(N%2==0){
+			$(".value").removeClass("star");			
+			N++;
+			if($(".value").hasClass("TimeL")){
+				$(".head").html("暂停");
+				timeLRun();
+			}
+			else{
+				$(".head").html("间断暂停");
+				timeBRun();
+			}
+		}else{
+			$(".value").addClass("star");
+			if($(".value").hasClass("TimeL")){
+				$(".head").html("启动");
+				clearInterval(timeobj_1);
+			}
+			else{
+				$(".head").html("间断启动");
+				clearInterval(timeobj_2);
+			}		
+			N++;		
+		}
+		   
+    });
+function timeChange(){
+  $(".time-BR").click(function(){
+    if($(".value").hasClass("star")){
+      tb=$(".time-B").val();
+      if(tb==180){
+        alert("警告！间隔时长最长为180分钟！");
+      }else{
+        tb++;ctb++;
+      }  
+      $(".time-B").val(tb);
+    } 
+  });
+  $(".time-BL").click(function(){
+    if($(".value").hasClass("star")){
+      tb=$(".time-B").val();
+      if(tb==1){
+        alert("警告！间隔时长最短为1分钟！");
+      }else{
+        tb--;ctb++
+      } 
+      $(".time-B").val(tb);
+    }
+  });
+  $(".time-LR").click(function(){
+    if($(".value").hasClass("star")){
+      tl=$(".time-L").val();
+      if(tl==180){
+        alert("警告！倒计时长最长为180分钟！");
+      }else{
+        tl++;ctl++;
+      } 
+      $(".time-L").val(tl);
+    }
+  });
+  $(".time-LL").click(function(){
+    if($(".value").hasClass("star")){
+      tl=$(".time-L").val();
+      if(tl==1){
+        alert("警告！倒计时长最短为1分钟！");
+      }else{
+        tl--;ctl++;
+      } 
+      $(".time-L").val(tl);
+    }
+  }); 
+}
+
+function getTime(num){
+  var m;
+  var f;
+  var x;
+  var arr;
+  m=num%60;
+  x=Math.floor(num/3600);
+  f=Math.floor(num/60)-Math.floor(num/3600)*60;
+  if(f<10&&m<10){
+  	return (x+":0"+f+":0"+m);
+  }
+  else if(m<10){
+  	return (x+":"+f+":0"+m);
+  }
+  else if(f<10){
+  	return (x+":0"+f+":"+m);
+  }
+  else{
+  	return (x+":"+f+":"+m);
+  } 
+}
+function timeLRun(){
+  	timeobj_1=setInterval(function(){
+  		if(totall!=0){
+  			totall--;
+    		newtime=getTime(totall);
+       		$(".timebody").html(newtime);
+  		}
+    	else{
+    		$(".timebody").html(timeB);
+    		$(".head").html("间断暂停");
+    		timeBRun();
+    		totall=tl*60;
+    		$(".value").removeClass("TimeL");
+    		$(".value").addClass("TimeB")
+    		clearInterval(timeobj_1);
+    	}
+    	bgChange();
+  },1000);
+}
+function timeBRun(){
+  	timeobj_2=setInterval(function(){
+  		if(totalb!=0){
+  			totalb--;
+       		newtime=getTime(totalb);
+       		$(".timebody").html(newtime);
+  		}
+  		else{
+  			$(".timebody").html(timeL);
+  			$(".head").html("暂停");
+    		timeLRun();
+    		totalb=tb*60;
+    		$(".value").removeClass("TimeB");
+    		$(".value").addClass("TimeL")
+    		clearInterval(timeobj_2);
+    	}
+       	bgChange();
+  },1000);
+}
+
+function bgChange(){
+if($(".value").hasClass("TimeL")){
+	re=(total2-totall)/total2*100;
+	color="#9C0";
+	$(".bg").css({
+		"height":re+"%",
+		"background":color,
+	});
+}
+else{
+	re=(total1-totalb)/total1*100;
+	color="#F03";
+	$(".bg").css({
+		"height":re+"%",
+		"background":color,
+	});
+} 
+    
+}
+  });
+
+</script>
+</head>
+<body>
+<h1 class="text-center">js计时器</h1>
+<div class="container main">
+  <div class="row control">
+    <div class="col-md-6">
+      <h5>倒计时间隔</h5>
+      <i class="glyphicon glyphicon-minus time-BL"></i>
+      <input type="text" class="time-B" value="1" readonly>
+      <i class="glyphicon glyphicon-plus time-BR"></i>
+    </div>
+    <div class="col-md-6">
+      <h5>倒计时长</h5>
+      <i class="glyphicon glyphicon-minus time-LL"></i>
+      <input type="text" class="time-L"  value="1" readonly>
+      <i class="glyphicon glyphicon-plus time-LR"></i>
+    </div>
+  </div>
+  <div class="row showtime">
+    <div class="value star TimeL">
+      <h1 class="head">启动</h1>
+      <p class="timebody"></p>
+      <span class="bg"></span>     
+    </div>
+  </div>
+</div>
+</body>
+</html>

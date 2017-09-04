@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<script>
+function makeFriendlyDates(arr) {
+  var day=Day();
+  var month=Month();
+  var before=arr[0];
+  var after=arr[1];
+  var re=[];
+  before=before.split("-");
+  after=after.split("-");
+  if(before[0]>after[0]){
+      return "undefined";
+  }else{
+      if(before[0]==after[0]&&before[1]==after[1]&&before[2]==after[2]){
+        after[1]=month[after[1]-1];
+        after[2]=day[after[2]-1]+",";
+        after[3]=after[0];
+        after.shift();
+        re[0]=after.join(" ");
+        return re;       
+      }else{
+        if(before[0]==after[0]){
+          after.shift();
+          before.shift();
+          if(before[0]==after[0]){
+            after.shift();
+            p1=del(before[0]);
+            p2=del(before[1]);
+            p3=del(after[0]);
+            before[0]=month[p1-1];
+            before[1]=day[p2-1];
+            after[0]=day[p3-1];
+            before=before.join(" ");
+            after.unshift(before);
+            return after;
+          }else{
+            p4=del(before[0]);
+            p5=del(before[1]);
+            p6=del(after[0]);
+            p7=del(after[1]);
+            before[0]=month[p4-1];
+            before[1]=day[p5-1];
+            after[0]=month[p6-1];
+            after[1]=day[p7-1];
+            re[0]=before.join(" ");
+            re[1]=after.join(" ");
+            return re;
+          }        
+        }else{
+          if(after[0]-before[0]>1 || before[1] < after[1] ||(before[1]==after[1]&&before[2]==after[2])){
+            before[1]=month[before[1]-1];
+            before[2]=day[before[2]-1]+",";
+            before[3]=before[0];
+            before.shift();
+            after[1]=month[after[1]-1];
+            after[2]=day[after[2]-1]+",";
+            after[3]=after[0];
+            after.shift();
+            re[0]=before.join(" ");
+            re[1]=after.join(" ");
+            return re;
+          }else{
+            before[1]=month[before[1]-1];
+            before[2]=day[before[2]-1]+",";
+            if(before[0]==2017){
+              before[2]=before[2].substr(0,before[2].length-1);
+            }else{
+              before[3]=before[0];
+            }
+            before.shift();
+            after[1]=month[after[1]-1];
+            after[2]=day[after[2]-1];
+            after.shift();
+            re[0]=before.join(" ");
+            re[1]=after.join(" ");
+            return re;
+          }
+        }
+      }
+  }
+  
+}
+function Day(){
+  arr=["1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th","13th","14th","15th","16th","17th","18th","19th","20th","21st","22nd","23rd","24th","25th","26th","27th","28th","29th","30th","31st"];
+  return arr;
+}
+function Month(){
+  arr=["January","February","March","April","May","June","July","August","September","October","November","December" ];
+  return arr;
+}
+function del(str){
+  if(str[0]===0){
+    return str[1];
+  }else{
+    return str;
+  }
+}
+makeFriendlyDates(["2017-07-12", "2018-06-13"]);
+
+
+</script>
+</body>
+</html>

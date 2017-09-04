@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>js计算器</title>
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https:////cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+<script>
+$(document).ready(function (){
+	$(".main").slideDown(1000);
+	var clear=false;
+	var Ans="";
+	var cal="";
+	$(".button").click(function Calculator(){
+		var text=$(this).attr("value");
+		if(text=="%" || text=="/" || text=="*" || text=="-" || text=="+" || text == "."|| parseInt(text,10)==text ){
+			if(clear){
+				cal=text;
+				$(".textvalue").val(cal);
+				clear=false;
+			}else{
+				cal+=text;
+				$(".textvalue").val(cal);
+			}
+		}
+		else if(text=="AC"){
+			cal="";
+			$(".textvalue").val(cal);
+		}
+		else if(text=="CE"){
+			cal=cal.substr(0,cal.length-1);
+			$(".textvalue").val(cal);
+		}else if(text=="="){
+			Ans=eval(cal);
+			$(".textvalue").val(Ans);
+			clear=true;
+		}
+	});
+});
+
+//键盘输入
+$(window).keyup(function(event){
+	if(event.shiftKey&&event.keyCode==53){
+		document.getElementById("btn3").click();
+	}
+	else if(event.shiftKey&&event.keyCode==56){
+		document.getElementById("btn8").click();
+	}
+	else if(event.shiftKey&&event.keyCode==187){
+		document.getElementById("btn16").click();
+	}
+	else{
+		switch(event.keyCode) {
+			case 96:document.getElementById("btn18").click();break;
+			case 97:document.getElementById("btn13").click();break;
+			case 98:document.getElementById("btn14").click();break;
+			case 99:document.getElementById("btn15").click();break;
+			case 100:document.getElementById("btn9").click();break;
+			case 101:document.getElementById("btn10").click();break;
+			case 102:document.getElementById("btn11").click();break;
+			case 103:document.getElementById("btn5").click();break;
+			case 104:document.getElementById("btn6").click();break;
+			case 105:document.getElementById("btn7").click();break;
+			case 106:document.getElementById("btn8").click();break;
+			case 107:document.getElementById("btn16").click();break;
+			case 108:document.getElementById("btn20").click();break;
+			case 109:document.getElementById("btn12").click();break;
+			case 110:document.getElementById("btn17").click();break;
+			case 111:document.getElementById("btn4").click();break;
+			case 8:document.getElementById("btn2").click();break;
+			case 9:document.getElementById("btn1").click();break;
+			case 13:document.getElementById("btn20").click();break;
+			case 48:document.getElementById("btn18").click();break;
+			case 49:document.getElementById("btn13").click();break;
+			case 50:document.getElementById("btn14").click();break;
+			case 51:document.getElementById("btn15").click();break;
+			case 52:document.getElementById("btn9").click();break;
+			case 53:document.getElementById("btn10").click();break;
+			case 54:document.getElementById("btn11").click();break;
+			case 55:document.getElementById("btn5").click();break;
+			case 56:document.getElementById("btn6").click();break;
+			case 57:document.getElementById("btn7").click();break;
+			case 187:document.getElementById("btn20").click();break;
+			case 189:document.getElementById("btn12").click();break;
+			case 190:document.getElementById("btn17").click();break;
+			case 191:document.getElementById("btn4").click();break;
+		}
+	}
+});
+</script>
+<style>
+body{
+	background:#09C;
+}
+.main{
+	margin: 7% auto auto auto;
+	padding:20px 15px;
+	width: 450px;
+	height:auto;
+	border:2px solid #F66;
+	border-radius: 5px;
+	background: #FFF;
+	display: none;
+}
+.textvalue{
+	height: 50px;
+	font-size:25px;
+	text-align: right;
+	margin-bottom:15px;
+	border-color:#F66; 
+}
+.button{
+	margin: 5px 5px;
+	width: 90px;
+}
+</style>	
+</head>
+<body>
+
+<div class="main">
+	<h1 class="text-center">Javascript-计算器</h1>
+	<input type="text" class="form-control textvalue" readonly>
+	<div class="buttons">
+		<button class="btn btn-info button" value="AC" id="btn1">清除（Tab）</button>
+		<button class="btn btn-info button" value="CE" id="btn2">删除</button>
+		<button class="btn btn-info button" value="%" id="btn3">%（取余）</button>
+		<button class="btn btn-info button" value="/" id="btn4">/</button>
+		<button class="btn btn-info button" value="7" id="btn5">7</button>
+		<button class="btn btn-info button" value="8" id="btn6">8</button>
+		<button class="btn btn-info button" value="9" id="btn7">9</button>
+		<button class="btn btn-info button" value="*" id="btn8">*</button>
+		<button class="btn btn-info button" value="4" id="btn9">4</button>
+		<button class="btn btn-info button" value="5" id="btn10">5</button>
+		<button class="btn btn-info button" value="6" id="btn11">6</button>
+		<button class="btn btn-info button" value="-" id="btn12">-</button>
+		<button class="btn btn-info button" value="1" id="btn13">1</button>
+		<button class="btn btn-info button" value="2" id="btn14">2</button>
+		<button class="btn btn-info button" value="3" id="btn15">3</button>
+		<button class="btn btn-info button" value="+" id="btn16">+</button>
+		<button class="btn btn-info button" value="." id="btn17">.</button>
+		<button class="btn btn-info button" value="0" id="btn18">0</button>
+		<button class="btn btn-info button" value="Ans" id="btn19">Ans</button>
+		<button class="btn btn-info button" value="=" id="btn20">=</button>
+	</div>
+</div>
+</body>
+</html>

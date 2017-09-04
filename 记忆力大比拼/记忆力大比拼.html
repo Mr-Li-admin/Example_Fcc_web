@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>记忆力大比拼</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<style>
+h1{
+	opacity: 0.2;
+}
+.choose{
+	display: none;
+	padding:15px 15px;
+	margin: 0px auto;
+	border: #C09 solid 2px;
+	border-radius:10px;
+	text-align: center;
+	width:500px;
+}
+.choose>p{
+	font-size:1em;
+	text-indent:2em;
+	text-align: left;
+}
+.choose>button{
+	
+}
+.main{
+	display: none;
+	margin:0px auto;
+	width:480px;
+	height:480px;
+	border: 10px solid #CCC;
+	border-radius:500px;
+	overflow: hidden;
+	position: relative;
+}
+.result{
+	display: none;
+	margin:0px auto;
+	margin-bottom:15px;
+	width: 500px;
+	height:35px;
+	line-height:35px;
+	text-align: center;
+	font-size: 2em;
+	border-left:5px solid #CCC;
+	border-right:5px solid #CCC;
+}
+.result>p{
+	display: inline-block;
+	margin: 0px 10px;
+}
+.col-xs-6{
+	height: 240px;
+	padding:0px;
+}
+.block{
+	display:block;
+	width: 100%;
+	height:100%;
+	cursor: pointer;
+	background:#000;
+	opacity: 0.5;
+}
+.block_1{
+	background:#0F0;/*0ff */
+}
+.block_2{
+	background:#00F;/* 0f0 */	
+}
+.block_3{
+	background:#F00;/*0ff */
+}
+.block_4{
+	background:#FF0;/*FF2 */
+}
+.star{
+	margin-top:-90px;
+	margin-left:-90px; 
+	position: absolute;
+	top:50%;
+	left:50%;
+	width:180px;
+	height:180px;
+	border: 10px solid #CCC;
+	border-radius:200px;
+	text-align: center;
+	line-height:170px;
+	font-size:4em;
+	background:#EEE;
+	z-index:5;
+	cursor: pointer;
+}
+.prompting{
+	display:none;
+	position:absolute;
+	width: 250px;
+	height:100px;
+	left: 50%;
+	top:150px;
+	margin-left:-127px;
+	border:2px solid #F00;
+	border-radius:5px;
+	background:#EEE;
+	font-size:2em;
+	text-align: center;
+	z-index:10;
+}
+@media(max-width: 500px){
+.choose{
+	width:270px;
+}
+.main{
+	margin:0px auto;
+	width:280px;
+	height:280px;
+	position: relative;
+}
+.result{
+	width: 300px;
+	font-size:1em;	
+}
+.col-xs-6{
+	height:140px;
+}
+.star{
+	margin-top:-35px;
+	margin-left:-35px;
+	position: absolute;
+	top:50%;
+	left:50%; 
+	width:80px;
+	height:80px;
+	text-align: center;
+	line-height:70px;
+	font-size:1.5em;
+}
+}
+</style>
+<script>
+
+$(document).ready(function(){
+	var model=0;
+	var starNum=0;
+	var arr=[];//每一关数组
+	var confirm=0;
+	var play=[];
+	var N=0;
+	var list=['./v1.mp3','./v2.mp3','./v3.mp3','./v4.mp3','./v5.mp3'];
+	var music_list=[]
+
+	$(".choose").slideDown(1000);
+	chooseModel();//模式选择
+	starAndOver();//开始和结束控制
+	arr=setArr();
+	playMan();
+	
+
+
+function chooseModel(){//模式选择
+	$(".btn").click(function(){
+		if($(this).index()==2){
+			model=0;
+		}else{
+			model=1;
+		}
+		$("h1").css({
+			"opacity":1,
+		});
+		$(".choose").slideUp(800);
+		$(".main,.result").fadeIn(1500);
+	});
+}
+
+function starAndOver(){//开始和结束控制
+	$(".star").click(function(){
+		if(starNum%2==0){
+			$(this).html("结束");
+			$(this).removeClass("over");
+			if(model){
+				$(".model").html("<b>地狱</b>");
+			}else{
+				$(".model").html("<b>一般</b>");
+			}
+			$(".confirm").html("<b>1</b>")
+			$(".star").css({
+				"width":"90px",
+				"height":"90px",
+				"margin":"-40px auto auto -45px",
+				"border": "5px solid #CCC",
+				"font-size":"2em",
+				"text-align": "center",
+				"line-height":"80px",
+			})			
+			starNum++;
+			play=[];
+			N=0;
+			confirm=0;
+			starGame();			
+		}else{
+			$(this).html("开始");
+			$(this).addClass("over");
+			$(".model").html("");
+			$(".confirm").html("");	
+			$(".star").css({
+				"width":"180px",
+				"height":"180px",
+				"margin":"-90px auto auto -90px",
+				"border": "10px solid #CCC",
+				"font-size":"4em",
+				"text-align": "center",
+				"line-height":"170px",
+			})	
+			starNum++;
+			overGame();//停止挑战
+		}
+	});
+}
+
+function setArr(){
+	var arr=[];
+	var newArr=[];
+	for(var i=0;i<20;i++){
+		arr[i]=Math.floor(Math.random()*4);
+	}
+	music_list=setMusic(arr);//建立播放列表
+	for(var j=0;j<20;j++){
+		newArr[j]=arr.slice(0,j+1);
+	}
+	return newArr;
+}
+
+function setMusic(arr){
+	var musicarr=[];
+	var newMusicArr=[]
+	for(var i=0;i<arr.length;i++){
+		musicarr[i]=list[arr[i]];
+	}
+	for(var j=0;j<20;j++){
+		newMusicArr[j]=musicarr.slice(0,j+1);
+	}
+	return newMusicArr;
+}
+
+function starGame(){
+	var i=0;
+	if(!$(".star").hasClass("over")){
+		obj=setInterval(function(){
+			if(i>arr[confirm].length){
+				clearInterval(obj);
+				isRight();//判断玩家在5秒内，是否能答对
+			}else{
+				$(".block").eq(arr[confirm][i]).animate({
+					opacity:0,
+				},300);
+				$("#video").attr("src",music_list[confirm][i]);
+				setTimeout(function(){
+					$(".block").css({
+						"opacity":0.5,
+					});	
+				},350);			
+			}
+			i++;		
+		},600);
+	}		
+}
+function isRight(){
+	var time;
+	if(confirm<4){
+		time=2000;
+	}
+	if(confirm>=4 && confirm<8){
+		time=5500;
+	}
+	if(confirm>=8 && confirm<12){
+		time=10000;
+	}
+	if(confirm>=12 && confirm<20){
+		time=20000;
+	}
+	action(time);
+}
+
+function action(time=0){
+	var text=true;
+	setTimeout(function(){
+		for(var i=0;i<arr[confirm].length;i++){
+			if(arr[confirm][i]!=play[i]){
+				text=false;
+				break;
+			}
+		}
+		if(text){
+			confirm++;
+			play=[];
+			N=0;
+			if(confirm==20){
+				alert("记忆力大挑战成功！你的记忆力一级棒！");
+				overGame();
+			}
+			else{
+				$(".confirm").html((confirm+1)+"&nbsp;关");
+				starGame();
+			}
+		}else{
+			if(model==0){
+				$(".confirm").html("本关挑战失败");
+				$("#video").attr("src",list[4]);
+				play=[];
+				N=0;
+				setTimeout(function(){
+					starGame();
+				},1000)
+			}
+			else{
+				$(".confirm").html("本次挑战失败");
+				$("#video").attr("src",list[4]);
+				confirm=0;
+				play=[];
+				N=0;
+				$(".confirm").html((confirm+1)+"&nbsp;关");
+				setTimeout(function(){
+					starGame();
+				},1000)
+			}				
+		}
+	},time);
+}
+
+function playMan(){
+	$(".block").click(function(){
+		play[N]=$(this).attr("num");
+		$("#video").attr("src",list[$(this).attr("num")]);
+		N++;
+	});
+	$(".block").mousedown(function(){
+		$(this).css({
+			"opacity":0,
+		});	
+	});
+	$(".block").mouseup(function(){
+		$(this).css({
+			"opacity":0.5,
+		});	
+	});
+}
+function overGame(){//结束游戏
+	clearInterval(obj);
+	var arr=[];
+	var confirm=0;
+	var play=[];
+	var N=0;
+	$(".confirm").html("结束游戏");
+	
+}
+});
+</script>
+</head>
+<body>
+	<div class="container">
+		<h1 class="page-header text-center">记忆力大比拼</h1>
+		<div class="row choose">
+			<p>
+				游戏规则：游戏中的色块会按随机的顺序亮起若干个色块，每次挑战增加一个色块亮起。你有<b>5秒</b>的时间，按照其亮起的顺序点击色块，如果数量与顺序无误，挑战成功。
+			</p>
+			<p>
+				游戏模式：<b>一般模式</b>，挑战某一关失败时，游戏会自动重置本次挑战，顺序和数量不变，直至挑战成功。<b>地狱模式</b>，挑战某一关失败时，游戏会自动重置本次游戏，重新从第一关开始。
+			</p>
+			<p>
+				温馨提示：开启声音。开启更好的游戏体验。
+			</p>
+			<button type="button" class="btn btn-info">一般模式</button>
+			<button type="button" class="btn btn-danger">地狱模式</button>
+		</div>
+		<div class="row result">
+			<p>模式：<span class="model"></span></p>
+			<p>关卡：<span class="confirm"></span></p>
+		</div>
+		<div class="row main">			
+			<div class="row">
+				<div class="col-xs-6 block_1">
+					<span class="block" num="0"></span>
+				</div>
+				<div class="col-xs-6 block_2">
+					<span class="block"  num="1"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-6 block_3">
+					<span class="block"  num="2"></span>
+				</div>
+				<div class="col-xs-6 block_4">
+					<span class="block" num="3"></span>
+				</div>
+			</div>
+			<div class="row star over">
+				开始
+			</div>
+		</div>
+		<div class="row prompting">
+			<video id="video" src="" controls="controls" autoplay="1"></video>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<script>
+function where(collection, source) {
+  var arr = [];
+  var value=[];
+  var n=0;
+  var text=false;
+  // What's in a name?
+  key=Object.keys(source);
+  
+  for(var i=0;i<collection.length;i++){
+    for(var j=0;j<key.length;j++){
+      value[j]=source[key[j]];
+      if(collection[i].hasOwnProperty(key[j])){
+        if(value[j]==collection[i][key[j]]){
+          text=true;
+        }else{
+          text=false;
+        }
+      }else{
+         text=false;
+      }
+    }
+    if(text){
+      arr[n]=collection[i];
+      n++;
+    }
+      
+   }
+  return arr;
+  
+  
+}
+
+where([{ "a": 1, "b": 2 }, { "a": 1 }, { "a": 1, "b": 2, "c": 2 }], { "a": 1, "b": 2 });
+
+</script>
+</body>
+</html>

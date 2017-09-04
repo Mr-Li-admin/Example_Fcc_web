@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+.jiemubao{
+	width:200px;
+	list-style:none;
+	margin:0px;
+	padding:0px;
+}
+</style>
+</head>
+
+<body>
+	<video id="video" controls="controls" >
+    	<source src="video/movie0.mp4" type="video/mp4" />
+    </video>
+    <button onclick="off()" id="off" value="播放">播放</button>
+    <button  onclick="bo()">播放</button>
+    <button  onclick="zan()">暂停</button>
+    <button  onclick="jia()">++</button>
+    <button  onclick="jian()">--</button>
+    <button  onclick="xiayi()">下一个</button>
+    <button  onclick="shangyi()">上一个</button>
+    <ul class="jiemubao" id="jiemubao">
+    	<li><a href="#" onclick="jiemubiao(0)">视频一</a></li>
+        <li><a href="#" onclick="jiemubiao(1)">视频二</a></li>
+        <li><a href="#" onclick="jiemubiao(2)">视频三</a></li>
+    </ul>
+    <div id="informasion"></div>
+</body>
+<script>
+function off(){
+	var Video=document.getElementById("video");
+	var value=document.getElementById("off").value;
+	if(value=="播放"){Video.play();document.getElementById("off").innerHTML="暂停";document.getElementById("off").value="暂停";}
+	else {Video.pause();document.getElementById("off").innerHTML="播放";document.getElementById("off").value="播放";}
+}
+</script>
+<script>
+var nextvideo = new Array()
+	nextvideo[0] = "video/movie0.mp4"
+	nextvideo[1] = "video/movie1.mp4"
+	nextvideo[2] = "video/movie2.mp4"
+var Video=document.getElementById("video");
+function off(){
+	var value=document.getElementById("off").value;
+	if(value=="播放"){Video.play();document.getElementById("off").innerHTML="暂停";document.getElementById("off").value="暂停";}
+	else {Video.pause();document.getElementById("off").innerHTML="播放";document.getElementById("off").value="播放";}
+}
+function bo(){
+	Video.play();
+	
+}
+function zan(){
+	Video.pause();
+	
+}
+function jia(){
+	var Volume=Video.volume+0.1;
+	Video.volume=Volume;
+	
+}
+function jian(){
+	var Volume=Video.volume-0.1;
+	Video.volume=Volume;
+	
+}
+function xiayi(){
+	var value=Video.currentSrc;
+	var newvalue= value.substring(value.length-16, value.length);
+	for(var i=0;i<nextvideo.length;i++)
+	{
+		if(nextvideo[i]==newvalue)
+		{
+			var I=i+1;
+			if(I>=nextvideo.length)
+			{
+				Video.src=nextvideo[0];
+				document.getElementById("informasion").innerHTML="视频已最后一个，下一个回到第一个";
+				
+			}
+			else
+			{
+				Video.src=nextvideo[I];
+			}
+		}
+	}
+		
+}
+function shangyi(){
+	var value=Video.currentSrc;
+	var newvalue= value.substring(value.length-16, value.length);
+	for(var i=0;i<nextvideo.length;i++)
+	{
+		var I=i-1;
+		if(I<0)
+		{
+			Video.src=nextvideo[nextvideo.length];
+			document.getElementById("informasion").innerHTML="视频已是第一个，下个视频回到最后一个";
+			
+		}
+		else
+		{
+			Video.src=nextvideo[I];
+		}
+	}
+		
+}
+function jiemubiao(n){
+	switch(n)
+	{
+		case 0:
+			Video.src=nextvideo[0]; break;
+						 
+		case 1:
+			Video.src=nextvideo[1]; break;
+				
+		case 2:
+			Video.src=nextvideo[2]; break;		
+	}
+	
+}
+</script>
+</html>

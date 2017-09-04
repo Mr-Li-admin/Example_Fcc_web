@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<script>
+
+function updateInventory(arr1, arr2) {
+    // 请保证你的代码考虑到所有情况
+  var newArr=arr1;
+  for(var i=0;i<arr2.length;i++){
+     for(var j=0;j<arr1.length;j++){//找到相同添加数量
+        if(arr1[j].indexOf(arr2[i][1]) !== -1){
+            newArr[j][0]=newArr[j][0]+arr2[i][0];
+          break;
+        }
+    }
+    if(j==arr1.length){//没有找到相同添加数量
+      newArr.push(arr2[i]);
+    }
+  }
+  return zbx(newArr);
+}
+
+//数组按字母排序
+function zbx(arr){
+	arr1=[];
+	arr2=[];
+	for(var j=0;j<arr.length;j++){
+		arr1[j]=arr[j][1][0].charCodeAt();
+	}
+	arr1.sort(function(a, b) {
+		return a - b;
+	});
+	for(var i=0;i<arr1.length;i++){
+		arr1[i]=String.fromCharCode(arr1[i]);
+	}
+	arr2=arr1;
+	for(var m=0;m<arr.length;m++){
+    	for(var n=0;n<arr1.length;n++){
+       		if(arr1[n]===arr[m][1][0]){
+	       		arr2[n]=arr[m];
+	       		delete arr[m];
+	       		break;
+       		}
+    	}
+	}
+  	return arr2;
+}
+// 仓库库存示例
+var curInv = [
+    [21, "Bowling Ball"],
+    [2, "Dirty Sock"],
+    [1, "Hair Pin"],
+    [5, "Microphone"]
+];
+
+var newInv = [
+    [2, "Hair Pin"],
+    [3, "Half-Eaten Apple"],
+    [67, "Bowling Ball"],
+    [7, "Toothpaste"]
+];
+
+updateInventory([[21, "Bowling Ball"], [2, "Dirty Sock"], [1, "Hair Pin"], [5, "Microphone"]], [[2, "Hair Pin"], [3, "Half-Eaten Apple"], [67, "Bowling Ball"], [7, "Toothpaste"]]);
+
+</script>
+</body>
+</html>

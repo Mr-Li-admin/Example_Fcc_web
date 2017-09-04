@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js" ></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js" ></script>
+	
+	
+	
+<script>
+function onInput(event){
+	if(event.keyCode == 13){
+		text=$("#value").val();
+		$.ajax({
+			url: 'https://en.wikipedia.org/w/api.php?format=json&action=query&generator=search&gsrnamespace=0&gsrlimit=10&prop=pageimages|extracts&pilimit=max&exintro&explaintext&exsentences=1&exlimit=max&gsrsearch='+text+'&origin=*',
+			dataType : 'json',
+			type : 'POST',
+			success : function (data) { 
+					 var results = data.query.pages;
+					 var scope=[];
+			     angular.forEach(results, function(v,k)  {
+			        scope.push(v)
+			      })
+			     $(".main").empty();
+			     for(var i=0;i<scope.length;i++){
+			     	//alert(scope[i].title+scope[i].extract+scope[i].pageid);
+			     	$(".main").append('<div class="results"><a href="https://en.wikipedia.org/?curid='+scope[i].pageid+'" target="_blank"><h5>'+scope[i].title+'</h5><p>'+scope[i].extract+'</p></a></div>');
+			     	$(".results").show().fadeIn(1000);
+			     }
+			} 
+			// var page = 'https://en.wikipedia.org/?curid=scope[i].pageid';//这是a链接
+		});
+	} 
+}
+
+x=5.0;
+y=0;
+vx=0.125;
+setInterval(function(){
+	$(".move").css({
+		"transform-origin":"50% 50%",
+		"transform":"translate3d("+x+"px,"+y+"px,0)"
+	})
+	if(x==5.0 || x==-5.0){
+		vx=-vx;
+	}
+	if(vx > 0){
+		x+=vx;
+		y=Math.sqrt(25.0-x*x);
+	}else{
+		x+=vx;
+		y=-Math.sqrt(25.0-x*x);
+	}	
+},5);
+function changeIn(){
+	$("span,h6").hide();
+	$("#input").show().animate({
+		"width":"100%"
+	},1000);
+	$(".input").animate({
+		"margin-top":"4%"
+	},1000);
+}
+function changeOut(){
+	$("span,h6").show();
+	$("#input").hide();
+	$(".main").slideUp(1000);
+	$(".input").animate({
+		"margin-top":"15%"
+	},1000);
+}
+</script>
+<style>
+*{
+	margin: 0px;
+	padding:0px;
+}
+body{
+	background: #9C0;
+	color:#000;
+	animation:changeColor 1s linear infinite alternate;
+	-webkit-animation:changeColor 4s linear infinite alternate;
+}
+.input{
+	margin: 15% auto auto auto;
+	width: 350px;
+	height:auto;
+}
+a{
+	display: block;
+	width:100%;
+	color: #000;
+	font-size:22px;
+	text-align: center;
+}
+a:hover{
+	text-decoration:none;
+	color:#000;
+}
+input{
+	display: block;
+	width: 80%;
+	height:45px;
+	margin: 0px auto;
+	padding:5px 10px;
+	outline: none;
+	border: #C03 solid 4px;
+	border-radius: 35px;
+	animation:changeColor 1s linear infinite alternate;
+	-webkit-animation:changeColor 4s linear infinite alternate;
+}
+span,h6{
+	margin:20px 0px;
+	display: block;
+	width:100%;
+	color: #000;
+	font-size:22px;
+	text-align: center;
+}
+#input{
+	display:none;
+	margin:20px auto auto auto;
+	width: 60px;
+	position: relative;
+}
+.closeicon{
+	position: absolute;
+	cursor: pointer;
+	top:0px;
+	right:50px;
+	font-size: 33px;
+}
+.move{
+	cursor: pointer;
+	font-size: 60px;
+}
+.results{
+	display: none;
+	width:100%;
+	height: auto;
+	background: #FFF;
+	margin:10px 0px;
+	padding:10px 20px;
+	text-align: left;
+}
+.results>a{
+	text-align: left;
+}
+.results:hover{
+	border-left:#C03 solid 4px;
+}
+p{
+	font-size:18px;
+}
+h5{
+	font-size:22px;
+}
+@keyframes changeColor{
+	0% {background: #9C0;}
+	100% {background: #9C9;}
+}
+@-webkit-keyframeschangeColor{
+	0% {background: #9C0;}
+	100% {background: #9C9;}
+}
+</style>
+</head>
+
+<body>
+<div class="input" >
+	<a href="http://en.wikipedia.org/wiki/Special:Random.">随机的维基百科条</a>
+	<div id="input">
+		<input type="text" value="" id="value" onkeydown="onInput(event)">
+		<div class="icon closeicon"><i class="glyphicon" onclick="changeOut()">X</i></div>
+	</div>
+	<span class="search"><i class="glyphicon glyphicon-search move" onclick="changeIn()"></i></span>
+	<h6>点击搜索</h6>
+</div>
+<div class="container main">
+</div>
+</body>
+</html>
